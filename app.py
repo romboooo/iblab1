@@ -49,7 +49,18 @@ def _initialize_database(app: Flask) -> None:
         database_path.parent.mkdir(parents=True, exist_ok=True)
 
     with app.app_context():
-        get_db().executescript(
+        db = get_db()
+        existing_tables = {
+            row["name"]
+            for row in db.execute(
+                "SELECT name FROM sqlite_master WHERE type = 'table'"
+            ).fetchall()
+        }
+        # Preserve existing text records when upgrading an older local database.
+        if "notes" in existing_tables and "documents" not in existing_tables:
+            db.execute("ALTER TABLE notes RENAME TO documents")
+
+        db.executescript(
             """
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY,
@@ -57,7 +68,7 @@ def _initialize_database(app: Flask) -> None:
                 password_hash TEXT NOT NULL
             );
 
-            CREATE TABLE IF NOT EXISTS notes (
+            CREATE TABLE IF NOT EXISTS documents (
                 id INTEGER PRIMARY KEY,
                 user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                 title TEXT NOT NULL,
@@ -102,7 +113,7 @@ def require_auth(view: WRAPPED) -> WRAPPED:
     return wrapped  # type: ignore[return-value]
 
 
-def _encode_note(row: sqlite3.Row) -> dict[str, Any]:
+def _encode_document(row: sqlite3.Row) -> dict[str, Any]:
     """Escape user supplied text before returning it to HTML-capable clients."""
     return {
         "id": row["id"],
@@ -211,16 +222,16 @@ def create_app(test_config: dict[str, Any] | None = None) -> Flask:
 
     @app.get("/api/data")
     @require_auth
-    def list_data():
+    def list_documents():
         rows = get_db().execute(
-            "SELECT id, title, content, created_at FROM notes WHERE user_id = ? ORDER BY id",
+            "SELECT id, title, content, created_at FROM documents WHERE user_id = ? ORDER BY id",
             (g.user_id,),
         ).fetchall()
-        return jsonify(data=[_encode_note(row) for row in rows])
+        return jsonify(data=[_encode_document(row) for row in rows])
 
     @app.post("/api/data")
     @require_auth
-    def create_data():
+    def create_document():
         if not request.is_json:
             return _json_error("Ожидается JSON", 415)
         payload = request.get_json(silent=True)
@@ -239,15 +250,15 @@ def create_app(test_config: dict[str, Any] | None = None) -> Flask:
 
         db = get_db()
         cursor = db.execute(
-            "INSERT INTO notes (user_id, title, content) VALUES (?, ?, ?)",
+            "INSERT INTO documents (user_id, title, content) VALUES (?, ?, ?)",
             (g.user_id, title.strip(), content.strip()),
         )
         db.commit()
         row = db.execute(
-            "SELECT id, title, content, created_at FROM notes WHERE id = ? AND user_id = ?",
+            "SELECT id, title, content, created_at FROM documents WHERE id = ? AND user_id = ?",
             (cursor.lastrowid, g.user_id),
         ).fetchone()
-        return jsonify(data=_encode_note(row)), 201
+        return jsonify(data=_encode_document(row)), 201
 
     @app.cli.command("create-user")
     @click.argument("username")

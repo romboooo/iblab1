@@ -62,7 +62,7 @@ class ApiTestCase(unittest.TestCase):
         invalid = self.client.get("/api/data", headers={"Authorization": "Bearer invalid"})
         self.assertEqual(invalid.status_code, 401)
 
-    def test_notes_are_owned_by_user_and_html_escaped_in_responses(self):
+    def test_documents_are_owned_by_user_and_html_escaped_in_responses(self):
         login = self.client.post(
             "/auth/login",
             json={"username": "student", "password": TEST_CREDENTIAL},
@@ -104,7 +104,7 @@ class ApiTestCase(unittest.TestCase):
         self.assertEqual(created.json["data"]["content"], "&#x27;); DROP TABLE users; --")
         with self.app.app_context():
             stored = get_db().execute(
-                "SELECT content FROM notes WHERE id = ?",
+                "SELECT content FROM documents WHERE id = ?",
                 (created.json["data"]["id"],),
             ).fetchone()
             self.assertEqual(stored["content"], injected_text)
