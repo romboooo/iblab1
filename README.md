@@ -57,8 +57,3 @@ curl -sS http://127.0.0.1:5000/api/data \
 - **Доступ к данным:** запросы заметок ограничены идентификатором пользователя из проверенного JWT; пользователь не может читать или изменять чужие заметки.
 - **HTTP-защита:** ответы включают заголовки `Content-Security-Policy`, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` и `Cache-Control`.
 
-## Отчёты из pipeline
-
-Pipeline запускает тесты API, Bandit и pip-audit. HTML-отчёт `dependency-check-report.html` загружается как артефакт с именем `dependency-check-report`. Откройте [запуски GitHub Actions](https://github.com/romboooo/iblab1/actions/workflows/ci.yml), выберите последний успешный запуск и скачайте этот артефакт. В последнем проверенном запуске тесты прошли, а pip-audit сообщил, что известных уязвимостей не найдено.
-
-Pipeline запускает тесты API, Bandit и pip-audit. В запуске #9 тесты прошли, Bandit завершился без находок заданных уровней, а pip-audit сообщил, что известных уязвимостей в зависимостях не найдено.
