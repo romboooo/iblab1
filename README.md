@@ -71,7 +71,11 @@ pip-audit -r requirements-dev.txt --progress-spinner off
 
 Workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) запускается при push в `main` и для pull request в `main`. Он выполняет интеграционные тесты, Bandit SAST и pip-audit SCA. При любой найденной уязвимости шаг проверки завершается ошибкой. JSON-отчёты обоих сканеров прикладываются к каждому запуску в артефакт `security-reports`.
 
-Запуски: [GitHub Actions](https://github.com/romboooo/iblab1/actions/workflows/ci.yml). После первого успешного запуска здесь можно закрепить ссылку на конкретный run и скриншоты отчётов из него.
+Запуски: [GitHub Actions](https://github.com/romboooo/iblab1/actions/workflows/ci.yml). Изображения ниже визуализируют JSON-отчёты из успешного [запуска #3](https://github.com/romboooo/iblab1/actions/runs/42610568512), commit `e556b6f`. Полные отчёты доступны в артефакте [`security-reports`](https://github.com/romboooo/iblab1/actions/runs/42610568512/artifacts/13669194353) и сохранены в репозитории: [Bandit JSON](docs/reports/bandit-report.json), [pip-audit JSON](docs/reports/pip-audit-report.json).
+
+![Bandit SAST: результатов срабатываний нет](docs/screenshots/bandit-report.png)
+
+![pip-audit SCA: 42 зависимости проверены, известных уязвимостей нет](docs/screenshots/pip-audit-report.png)
 
 ## Контрольные вопросы
 
