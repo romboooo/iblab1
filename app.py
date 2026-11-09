@@ -115,7 +115,9 @@ def _encode_note(row: sqlite3.Row) -> dict[str, Any]:
 def create_app(test_config: dict[str, Any] | None = None) -> Flask:
     app = Flask(__name__)
     app.config.from_mapping(
-        DATABASE_PATH=str(Path(app.root_path) / "instance" / "api.sqlite3"),
+        DATABASE_PATH=os.environ.get(
+            "DATABASE_PATH", str(Path(app.root_path) / "instance" / "api.sqlite3")
+        ),
         JWT_SECRET_KEY=None,
         JWT_ISSUER="secure-rest-api",
         JWT_AUDIENCE="secure-rest-api-clients",
