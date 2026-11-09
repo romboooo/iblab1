@@ -158,10 +158,6 @@ def create_app(test_config: dict[str, Any] | None = None) -> Flask:
     def request_too_large(_error):
         return _json_error("Тело запроса превышает допустимый размер", 413)
 
-    @app.get("/health")
-    def health():
-        return jsonify(status="ok")
-
     @app.post("/auth/login")
     def login():
         if not request.is_json:

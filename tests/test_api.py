@@ -36,12 +36,6 @@ class ApiTestCase(unittest.TestCase):
     def tearDown(self):
         self.temp_dir.cleanup()
 
-    def test_health_is_public(self):
-        response = self.client.get("/health")
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json, {"status": "ok"})
-
     def test_login_returns_jwt_and_invalid_credentials_are_rejected(self):
         response = self.client.post(
             "/auth/login",
@@ -117,6 +111,7 @@ class ApiTestCase(unittest.TestCase):
             self.assertEqual(
                 get_db().execute("SELECT COUNT(*) FROM users").fetchone()[0], 1
             )
+        self.assertEqual(self.client.get("/api/data", headers=headers).status_code, 200)
 
 
 if __name__ == "__main__":
