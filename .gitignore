@@ -8,5 +8,4 @@ instance/
 htmlcov/
 /bandit-report.json
 /pip-audit-report.json
-/dependency-check-report.html
 security-reports/

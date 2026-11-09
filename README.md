@@ -57,3 +57,7 @@ curl -sS http://127.0.0.1:5000/api/data \
 - **Доступ к данным:** запросы текстовых документов ограничены идентификатором пользователя из проверенного JWT; пользователь не может читать или изменять чужие документы.
 - **HTTP-защита:** ответы включают заголовки `Content-Security-Policy`, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` и `Cache-Control`.
 
+## Отчёт из pipeline
+
+pip-audit формирует JSON-отчёт `pip-audit-report.json`, который загружается как артефакт `pip-audit-report`. Откройте [запуски GitHub Actions](https://github.com/romboooo/iblab1/actions/workflows/ci.yml), выберите запуск и скачайте этот артефакт.
+

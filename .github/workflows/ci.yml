@@ -35,19 +35,15 @@ jobs:
         run: python -m unittest discover -s tests -v
 
       - name: Run Bandit SAST
-        run: bandit -r app.py tests scripts -f json -o bandit-report.json -l -i
+        run: bandit -r app.py tests -f json -o bandit-report.json -l -i
 
       - name: Run pip-audit SCA
         run: pip-audit -r requirements-dev.txt -f json -o pip-audit-report.json --cache-dir "${RUNNER_TEMP}/pip-audit-cache" --progress-spinner off
 
-      - name: Render dependency check HTML
-        if: always()
-        run: python scripts/render_dependency_report.py pip-audit-report.json dependency-check-report.html
-
-      - name: Upload dependency check report
+      - name: Upload pip-audit JSON report
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: dependency-check-report
-          path: dependency-check-report.html
-          if-no-files-found: error
+          name: pip-audit-report
+          path: pip-audit-report.json
+          if-no-files-found: ignore
