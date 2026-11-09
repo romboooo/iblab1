@@ -40,12 +40,10 @@ jobs:
       - name: Run pip-audit SCA
         run: pip-audit -r requirements-dev.txt -f json -o pip-audit-report.json --cache-dir "${RUNNER_TEMP}/pip-audit-cache" --progress-spinner off
 
-      - name: Upload security reports
+      - name: Upload dependency check report
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: security-reports
-          path: |
-            bandit-report.json
-            pip-audit-report.json
-          if-no-files-found: warn
+          name: dependency-check-report
+          path: pip-audit-report.json
+          if-no-files-found: error
