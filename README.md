@@ -10,23 +10,11 @@
 - Bandit для SAST, pip-audit для SCA
 - GitHub Actions для CI/CD
 
-## Запуск
-
-```bash
-cd lab1
-python -m venv .venv
-.venv/bin/pip install -r requirements-dev.txt
-export JWT_SECRET_KEY="$(python -c 'import secrets; print(secrets.token_hex(32))')"
-.venv/bin/flask --app app:create_app create-user rmb
-.venv/bin/flask --app app:create_app run
-```
 
 При создании пользователя введите пароль длиной от 12 до 128 символов. Создание учётной записи выполняется командой CLI; REST-маршрута `/auth/register` в этом варианте API нет.
 Если пользователь уже создан в локальной базе, шаг `create-user` можно пропустить.
 
-## Описание API
 
-Все запросы и ответы используют JSON. Для защищённых маршрутов передавайте JWT в заголовке `Authorization: Bearer <токен>`.
 
 ### `POST /auth/login`
 
