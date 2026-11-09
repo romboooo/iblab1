@@ -6,6 +6,6 @@ instance/
 .pytest_cache/
 .coverage
 htmlcov/
-bandit-report.json
-pip-audit-report.json
+/bandit-report.json
+/pip-audit-report.json
 security-reports/
