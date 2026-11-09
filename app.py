@@ -114,6 +114,7 @@ def _encode_note(row: sqlite3.Row) -> dict[str, Any]:
 
 def create_app(test_config: dict[str, Any] | None = None) -> Flask:
     app = Flask(__name__)
+    app.json.ensure_ascii = False
     app.config.from_mapping(
         DATABASE_PATH=os.environ.get(
             "DATABASE_PATH", str(Path(app.root_path) / "instance" / "api.sqlite3")
@@ -121,7 +122,7 @@ def create_app(test_config: dict[str, Any] | None = None) -> Flask:
         JWT_SECRET_KEY=None,
         JWT_ISSUER="secure-rest-api",
         JWT_AUDIENCE="secure-rest-api-clients",
-        JWT_TTL_SECONDS=900,
+        JWT_TTL_SECONDS=10 * 60 * 60,
         MAX_CONTENT_LENGTH=16 * 1024,
     )
     app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
